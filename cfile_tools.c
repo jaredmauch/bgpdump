@@ -271,13 +271,9 @@ size_t cfr_read(void *ptr, size_t size, size_t nmemb, CFRFILE *stream) {
 
       // Other error...
       stream->error2 = bzerror;
-      BZ2_bzReadClose( &bzerror, bzin );
-      if (bzerror != BZ_OK) {
-        stream->error2 = bzerror;
-      }
-      retval = fclose((FILE *)(stream->data1));
-      stream->error1 = retval;
-      stream->closed = 1;
+      // Keep the handles open for cfr_close, but prevent later reads from
+      // reusing a bzip2 handle that may have been invalidated by the error.
+      stream->eof = 1;
       return(0);
     }
     break;

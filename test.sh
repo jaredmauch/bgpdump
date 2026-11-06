@@ -17,6 +17,14 @@ for mrt in `ls test_data`; do
     fi
 done
 
+printf 'not a bzip2 stream\n' > test_out/invalid.bz2
+if ./bgpdump -q -m test_out/invalid.bz2 > /dev/null 2>&1; then
+    echo "      testing invalid bzip2 stream...success"
+else
+    echo "      testing invalid bzip2 stream...failed"
+    FAILURES=$(( FAILURES + 1 ))
+fi
+
 if [ ! -z "$BGPDUMP_TEST_UATTR" ] ; then
 for mrt in $(ls test_data) ; do
     printf "      testing -u %s..." "$mrt"
